@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My calculator</title>
+    <script type="text/javascript">
+      var total, vals, secondval, con, showans;
+      total = 0;
+      vals = "";
+      secondval = "";
+      function operate() {
+        let l = vals.length - 1;
+        if (vals.charAt(l) === "+") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            total = fval + sval;
+            showans.textContent = total;
+          }
+        } else if (vals.charAt(l) === "-") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            total = fval - sval;
+            showans.textContent = total;
+          }
+        } else if (vals.charAt(l) === "√") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            if (fval == "") {
+              total = sval ** (1 / 2);
+              showans.textContent = total;
+            } else {
+              total = sval ** (1 / 2) * fval;
+              showans.textContent = total;
+            }
+            console.log(fval);
+          }
+        } else if (vals.charAt(l) === "×") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            total = fval * sval;
+            showans.textContent = total;
+          }
+        } else if (vals.charAt(l) === "÷") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            total = fval / sval;
+            showans.textContent = total;
+          }
+        } else if (vals.charAt(l) === "^") {
+          secondval += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+          if (secondval.length > 0) {
+            let fval = Number(sessionStorage.getItem("val1"));
+            let sval = Number(secondval);
+            total = fval ** sval;
+            showans.textContent = total;
+          }
+        } else {
+          vals += targ.dataset.val;
+          con.textContent += targ.dataset.val;
+        }
+      }
+      document.addEventListener("DOMContentLoaded", function () {
+        setInterval(function () {
+          document.querySelectorAll("td").forEach(function (act) {
+            if (act.matches("#equals")) {
+              act.style.backgroundColor = "orange";
+            } else {
+              act.style.backgroundColor = "black";
+            }
+            act.style.boxShadow = "none";
+            act.style.color = "white";
+          });
+        }, 1000);
+        document.addEventListener("click", function (event) {
+          targ = event.target;
+          con = document.querySelector("#display");
+          showans = document.querySelector("#answer");
+          if (targ.matches("td")) {
+            targ.style.backgroundColor = "yellow";
+            targ.style.boxShadow = "0px 0px 100px 30px rgb(120,120,120)";
+
+            if (targ.dataset.val === "0") {
+              if (con.textContent === "0") {
+                con.textContent = targ.dataset.val;
+              } else {
+                operate();
+              }
+            } else if (targ.dataset.val == ".") {
+              if (con.textContent === "0") {
+                con.textContent += targ.dataset.val;
+                vals += targ.dataset.val;
+              } else {
+                if (!(vals.includes(".") || vals.endsWith("."))) {
+                  con.textContent += targ.dataset.val;
+                  vals += targ.dataset.val;
+                } else {
+                  if (secondval.length > 0) {
+                    if (!(secondval.includes(".") || secondval.endsWith("."))) {
+                      con.textContent += targ.dataset.val;
+                      secondval += targ.dataset.val;
+                    }
+                  }
+                }
+              }
+            } else if (
+              !(
+                targ.dataset.val === "0" ||
+                targ.dataset.val === "." ||
+                targ.dataset.val === "×" ||
+                targ.dataset.val === "pow" ||
+                targ.dataset.val === "div" ||
+                targ.dataset.val === "+" ||
+                targ.dataset.val === "-" ||
+                targ.dataset.val === "C" ||
+                targ.dataset.val === "="
+              )
+            ) {
+              if (con.textContent === "0") {
+                con.textContent = targ.dataset.val;
+                vals += targ.dataset.val;
+              } else {
+                operate();
+              }
+            } else if (targ.dataset.val === "C") {
+              if (targ.textContent === "AC") {
+                total = 0;
+                showans.textContent = "";
+                secondval = "";
+                vals = "";
+                sessionStorage.setItem("val1", "");
+                con.textContent = "0";
+              } else {
+                secondval = secondval.slice(0, -1);
+                vals = vals.slice(0, -1);
+                con.textContent = con.textContent.slice(0, -1);
+                if (con.textContent.length == 0) {
+                  con.textContent = "0";
+                }
+              }
+            } else if (targ.dataset.val === "=") {
+              if (secondval.length > 0) {
+                con.textContent = showans.textContent;
+                showans.textContent = "";
+                vals = con.textContent;
+              }
+            } else {
+              if (targ.className == "operator") {
+                let t = con.textContent.length - 1;
+                if (targ.dataset.val === "+") {
+                  if (
+                    con.textContent.charAt(t) == "-" ||
+                    con.textContent.charAt(t) == "√" ||
+                    con.textContent.charAt(t) == "÷" ||
+                    con.textContent.charAt(t) == "^" ||
+                    con.textContent.charAt(t) == "×"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+                    vals = vals.slice(0, -1) + targ.dataset.val;
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) == targ.dataset.val) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "-" ||
+                      vals.charAt(vals.length - 1) === "^"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += targ.dataset.val;
+                    vals += targ.dataset.val;
+                  }
+                }
+                if (targ.dataset.val === "-") {
+                  if (
+                    con.textContent.charAt(t) == "+" ||
+                    con.textContent.charAt(t) == "√" ||
+                    con.textContent.charAt(t) == "÷" ||
+                    con.textContent.charAt(t) == "^" ||
+                    con.textContent.charAt(t) == "×"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+                    vals = vals.slice(0, -1) + targ.dataset.val;
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) == targ.dataset.val) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "-" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "^"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += targ.dataset.val;
+                    vals += targ.dataset.val;
+                  }
+                }
+                if (targ.dataset.val === "×") {
+                  if (
+                    con.textContent.charAt(t) == "+" ||
+                    con.textContent.charAt(t) == "√" ||
+                    con.textContent.charAt(t) == "÷" ||
+                    con.textContent.charAt(t) == "^" ||
+                    con.textContent.charAt(t) == "-"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+                    vals = vals.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) == targ.dataset.val) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "-" ||
+                      vals.charAt(vals.length - 1) === "^"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += targ.dataset.val;
+                    vals += targ.dataset.val;
+                  }
+                }
+                if (targ.dataset.val === "div") {
+                  if (
+                    con.textContent.charAt(t) == "+" ||
+                    con.textContent.charAt(t) == "×" ||
+                    con.textContent.charAt(t) == "√" ||
+                    con.textContent.charAt(t) == "^" ||
+                    con.textContent.charAt(t) == "-"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + "÷";
+                    vals = vals.slice(0, -1) + "÷";
+
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) == "÷") {
+                    let n = con.textContent.slice(0, -1) + "÷";
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "-" ||
+                      vals.charAt(vals.length - 1) === "^"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += "÷";
+                    vals += "÷";
+                  }
+                }
+                if (targ.dataset.val === "√") {
+                  if (
+                    con.textContent.charAt(t) == "+" ||
+                    con.textContent.charAt(t) == "÷" ||
+                    con.textContent.charAt(t) == "^" ||
+                    con.textContent.charAt(t) == "-" ||
+                    con.textContent.charAt(t) == "×"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+                    vals = vals.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) == targ.dataset.val) {
+                    let n = con.textContent.slice(0, -1) + targ.dataset.val;
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "-" ||
+                      vals.charAt(vals.length - 1) === "^"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += targ.dataset.val;
+                    vals += targ.dataset.val;
+                  }
+                }
+
+                if (targ.dataset.val === "pow") {
+                  if (
+                    con.textContent.charAt(t) == "+" ||
+                    con.textContent.charAt(t) === "√" ||
+                    con.textContent.charAt(t) == "÷" ||
+                    con.textContent.charAt(t) == "-" ||
+                    con.textContent.charAt(t) == "×"
+                  ) {
+                    let n = con.textContent.slice(0, -1) + "^";
+                    vals = vals.slice(0, -1) + "^";
+                    con.textContent = n;
+                  } else if (con.textContent.charAt(t) === "^") {
+                    let n = con.textContent.slice(0, -1) + "^";
+
+                    con.textContent = n;
+                  } else {
+                    if (
+                      vals.charAt(vals.length - 1) === "^" ||
+                      vals.charAt(vals.length - 1) === "√" ||
+                      vals.charAt(vals.length - 1) === "÷" ||
+                      vals.charAt(vals.length - 1) === "×" ||
+                      vals.charAt(vals.length - 1) === "+" ||
+                      vals.charAt(vals.length - 1) === "-"
+                    ) {
+                      vals = vals.slice(0, -1);
+                      sessionStorage.setItem("val1", total);
+                    } else {
+                      sessionStorage.setItem("val1", con.textContent);
+                    }
+                    secondval = "";
+                    con.textContent += "^";
+                    vals += "^";
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+    </script>
+    <style type="text/css">
+      table {
+        border-radius: 20px;
+        width: 500px;
+        box-shadow: 3px 3px 5px rgb(39, 39, 39, 0.7);
+        table-layout: fixed;
+        margin: 50px auto;
+        border: 20px groove darkblue;
+        background-color: lightgray;
+        border-spacing: 10px;
+      }
+      #display {
+        overflow-x: hidden;
+        white-space: nowrap;
+      }
+
+      td {
+        padding: 15px 0;
+        background-color: black;
+        font-size: 16px;
+        font-family: sans-serif;
+        font-weight: 400;
+        border-radius: 20px;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      th {
+        padding: 40px;
+        border: 10px ridge yellow;
+        background-color: rgb(200, 200, 200);
+        font-size: 25px;
+        font-family: sans-serif;
+        font-weight: 300;
+        text-align: right;
+        height: 50px;
+      }
+      #answer {
+        height: 20px;
+        overflow-x: hidden;
+        overflow-y: hidden;
+        display: block;
+        padding: 20px 15px;
+        font-size: 14px;
+      }
+      #equals {
+        background-color: orange;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr id="over">
+          <th colspan="4">
+            <div id="display">0</div>
+            <div id="answer"></div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="back">
+          <td id="del" data-val="C">AC</td>
+          <td class="operator" data-val="div">÷</td>
+          <td class="operator" data-val="pow">^</td>
+          <td class="operator" data-val="-">-</td>
+        </tr>
+        <tr class="back">
+          <td data-val="1">1</td>
+          <td data-val="2">2</td>
+          <td data-val="3">3</td>
+          <td class="operator" data-val="+">+</td>
+        </tr>
+        <tr class="back">
+          <td data-val="4">4</td>
+          <td data-val="5">5</td>
+          <td data-val="6">6</td>
+          <td class="operator" data-val="×">×</td>
+        </tr>
+        <tr class="back">
+          <td data-val="7">7</td>
+          <td data-val="8">8</td>
+          <td data-val="9">9</td>
+          <td id="equals" rowspan="2" data-val="=">=</td>
+        </tr>
+        <tr class="back">
+          <td data-val="0">0</td>
+          <td class="operator" data-val="√">√</td>
+          <td data-val=".">.</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
